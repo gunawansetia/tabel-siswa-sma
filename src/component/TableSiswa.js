@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Container } from "@mui/system";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,22 +12,15 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+import { connect } from "react-redux";
+import { fetchTable } from "../actions";
 
-export default function BasicTable() {
-  const [state, setState] = useState({
-    items: [],
-    isLoading: true,
-  });
+function TableSiswa(props) {
+  useEffect(() => {
+    props.dispatch(fetchTable());
+  }, [props]);
 
-  const { items, isLoading } = state;
-
-  useState(() => {
-    fetch("https://dummyjson.com/users")
-      .then((res) => res.json())
-      .then((res) => setState({ items: res.users, isLoading: false }));
-  });
-
-  if (isLoading) {
+  if (props.isLoading || !props.items) {
     return (
       <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
         Loading...
@@ -70,7 +63,7 @@ export default function BasicTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((row) => (
+              {props.items.map((row) => (
                 <TableRow
                   key={row.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -91,3 +84,11 @@ export default function BasicTable() {
     </>
   );
 }
+
+function mapStateToProps(state) {
+  return {
+    items: state.rows.users,
+  };
+}
+
+export default connect(mapStateToProps)(TableSiswa);

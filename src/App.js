@@ -1,8 +1,8 @@
 import "./App.css";
-import Table from "../src/component/Table";
+import TableSiswa from "./component/TableSiswa";
 
 function App() {
-  return <Table />;
+  return <TableSiswa />;
 }
 
 export default App;
