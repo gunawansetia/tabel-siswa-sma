@@ -26,6 +26,20 @@ export const addSiswa = (data) => ({
   },
 });
 
+export const getId = (data) => ({
+  type: "GET_ID",
+  payload: {
+    id: data,
+  },
+});
+
+export const updateSiswa = (data) => ({
+  type: "PUT_DATA",
+  payload: {
+    users: data,
+  },
+});
+
 const initData = (rows) => ({
   type: "INIT_DATA",
   rows,

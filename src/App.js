@@ -2,6 +2,7 @@ import { Breadcrumbs, Container } from "@mui/material";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AddSiswa from "./component/AddSiswa";
+import EditSiswa from "./component/EditSiswa";
 import NavBar from "./component/NavBar";
 import TableSiswa from "./component/TableSiswa";
 import "./App.css";
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/" element={<TableSiswa />} />
         <Route path="/add" index element={<AddSiswa />} />
+        <Route path="/edit" index element={<EditSiswa />} />
       </Routes>
     </BrowserRouter>
   );

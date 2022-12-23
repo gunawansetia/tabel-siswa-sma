@@ -9,16 +9,17 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { connect } from "react-redux";
-import { fetchTable } from "../actions";
+import { fetchTable, getId } from "../actions";
 import { Button, TablePagination } from "@mui/material";
 import { Link } from "react-router-dom";
-import AddSiswa from "./AddSiswa";
+import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
 
 function TableSiswa(props) {
   useEffect(() => {
-    if (props.items.length === 0) {
+    if (props.items ? props.items.length === 0 : true) {
       props.dispatch(fetchTable());
     }
+    console.log(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -32,6 +33,10 @@ function TableSiswa(props) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const getIdUser = (id) => {
+    props.dispatch(getId(id));
   };
 
   if (props.isLoading || !props.items) {
@@ -59,7 +64,7 @@ function TableSiswa(props) {
                 <TableCell>Nama Lengkap</TableCell>
                 <TableCell>Jenis Kelamin</TableCell>
                 <TableCell>Domisili</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell sx={{ width: 200 }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -77,12 +82,25 @@ function TableSiswa(props) {
                       row.middleName ? row.middleName : ""
                     } ${row.lastName}`}</TableCell>
                     <TableCell>
-                      {row.gender === "male" || "Laki-laki"
+                      {row.gender === "male"
+                        ? "Laki-laki"
+                        : row.gender === "female"
+                        ? "Perempuan"
+                        : row.gender === "Laki-laki"
                         ? "Laki-laki"
                         : "Perempuan"}
                     </TableCell>
                     <TableCell>{row.address ? row.address.city : ""}</TableCell>
-                    <TableCell>Edit, Hapus</TableCell>
+                    <TableCell>
+                      <Link to="edit">
+                        <Button onClick={() => getIdUser(row.id)}>
+                          <EditOutlined />
+                        </Button>
+                      </Link>
+                      <Button>
+                        <DeleteOutlined />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
