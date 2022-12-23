@@ -7,18 +7,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import { connect } from "react-redux";
 import { fetchTable } from "../actions";
-import { TableFooter, TablePagination } from "@mui/material";
+import { Button, TablePagination } from "@mui/material";
+import { Link } from "react-router-dom";
+import AddSiswa from "./AddSiswa";
 
 function TableSiswa(props) {
   useEffect(() => {
-    props.dispatch(fetchTable());
+    if (props.items.length === 0) {
+      props.dispatch(fetchTable());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -44,27 +44,13 @@ function TableSiswa(props) {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            ></IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Gunawan Setia
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box>
-
       <Container maxWidth="xl">
         <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
           Daftar Siswa SMA Setia
         </Typography>
+        <Link to="/add">
+          <Button variant="outlined">Tambah Siswa</Button>
+        </Link>
         <TableContainer sx={{ my: 2 }} component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -91,9 +77,11 @@ function TableSiswa(props) {
                       row.middleName ? row.middleName : ""
                     } ${row.lastName}`}</TableCell>
                     <TableCell>
-                      {row.gender === "male" ? "Laki-laki" : "Perempuan"}
+                      {row.gender === "male" || "Laki-laki"
+                        ? "Laki-laki"
+                        : "Perempuan"}
                     </TableCell>
-                    <TableCell>{row.address.city}</TableCell>
+                    <TableCell>{row.address ? row.address.city : ""}</TableCell>
                     <TableCell>Edit, Hapus</TableCell>
                   </TableRow>
                 ))}
@@ -116,7 +104,8 @@ function TableSiswa(props) {
 
 function mapStateToProps(state) {
   return {
-    items: state.rows.users,
+    loading: state.loading,
+    items: state.rows,
   };
 }
 

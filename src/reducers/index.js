@@ -1,7 +1,7 @@
 let initialState = {
   rows: [],
   error: null,
-  loading: false,
+  loading: true,
 };
 
 const items = (state = initialState, action) => {
@@ -10,13 +10,18 @@ const items = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        rows: action.rows,
+        rows: action.rows.users,
       };
 
     case "INIT_DATA_STARTED":
       return {
         ...state,
         loading: true,
+      };
+    case "ADD_DATA":
+      return {
+        ...state,
+        rows: [action.payload.users, ...state.rows],
       };
     default:
       return state;

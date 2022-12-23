@@ -19,6 +19,13 @@ export const fetchTable = () => {
   };
 };
 
+export const addSiswa = (data) => ({
+  type: "ADD_DATA",
+  payload: {
+    users: data,
+  },
+});
+
 const initData = (rows) => ({
   type: "INIT_DATA",
   rows,
