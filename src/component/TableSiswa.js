@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "@mui/system";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,11 +14,25 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { connect } from "react-redux";
 import { fetchTable } from "../actions";
+import { TableFooter, TablePagination } from "@mui/material";
 
 function TableSiswa(props) {
   useEffect(() => {
     props.dispatch(fetchTable());
-  }, [props]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   if (props.isLoading || !props.items) {
     return (
@@ -63,23 +77,38 @@ function TableSiswa(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.items.map((row) => (
-                <TableRow
-                  key={row.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.id}
-                  </TableCell>
-                  <TableCell>{row.firstName}</TableCell>
-                  <TableCell>{row.gender}</TableCell>
-                  <TableCell>{row.address.city}</TableCell>
-                  <TableCell>Edit, Hapus</TableCell>
-                </TableRow>
-              ))}
+              {props.items
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableRow
+                    key={row.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.id}
+                    </TableCell>
+                    <TableCell>{`${row.firstName} ${
+                      row.middleName ? row.middleName : ""
+                    } ${row.lastName}`}</TableCell>
+                    <TableCell>
+                      {row.gender === "male" ? "Laki-laki" : "Perempuan"}
+                    </TableCell>
+                    <TableCell>{row.address.city}</TableCell>
+                    <TableCell>Edit, Hapus</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10]}
+          component="div"
+          count={props.items.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Container>
     </>
   );
