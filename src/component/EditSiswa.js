@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { addSiswa, updateSiswa } from "../actions";
+import { updateSiswa } from "../actions";
 
 const defaultValues = {
   firstName: "",

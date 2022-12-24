@@ -6,6 +6,7 @@ import EditSiswa from "./component/EditSiswa";
 import NavBar from "./component/NavBar";
 import TableSiswa from "./component/TableSiswa";
 import "./App.css";
+import DeleteSiswa from "./component/DeleteSiswa";
 
 function App() {
   return (
@@ -22,9 +23,10 @@ function App() {
         </Breadcrumbs>
       </Container>
       <Routes>
-        <Route path="/" element={<TableSiswa />} />
-        <Route path="/add" index element={<AddSiswa />} />
-        <Route path="/edit" index element={<EditSiswa />} />
+        <Route path="/" index element={<TableSiswa />} />
+        <Route path="/add" element={<AddSiswa />} />
+        <Route path="/edit" element={<EditSiswa />} />
+        <Route path="/delete" element={<DeleteSiswa />} />
       </Routes>
     </BrowserRouter>
   );
