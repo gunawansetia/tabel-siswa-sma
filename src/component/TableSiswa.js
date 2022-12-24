@@ -56,7 +56,11 @@ function TableSiswa(props) {
       <DeleteSiswa anId={id} open={open} setOpen={setOpen} />
 
       <Container maxWidth="xl">
-        <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
+        <Typography
+          variant="h5"
+          fontWeight={500}
+          sx={{ textAlign: "center", my: 3 }}
+        >
           Daftar Siswa SMA Setia
         </Typography>
         <Link style={{ textDecoration: "none" }} to="/add">

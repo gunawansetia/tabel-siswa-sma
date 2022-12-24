@@ -23,7 +23,6 @@ function DeleteSiswa({ anId, open, setOpen }) {
           })
           .then((res) => ({ status: res.status, body: res.data }))
           .then((obj) => {
-            console.log(obj.body);
             setOpen(false);
             setOpenStatusDelete({ isOpen: true, text: obj.status });
           })

@@ -59,7 +59,7 @@ function AddSiswa({ dispatch }) {
           .then((data) => ({ status: res.status, body: data }))
           .then((obj) => {
             dispatch(addSiswa(obj.body));
-            console.log(obj.body);
+
             setOpen({ isOpen: true, text: obj.status, success: true });
           });
       })
@@ -73,7 +73,11 @@ function AddSiswa({ dispatch }) {
   return (
     <>
       <Container maxWidth="md">
-        <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
+        <Typography
+          variant="h5"
+          fontWeight={500}
+          sx={{ textAlign: "center", my: 3 }}
+        >
           Tambah Siswa SMA Setia
         </Typography>
         <Alert

@@ -9,7 +9,6 @@ export const fetchTable = () => {
     axios
       .get(Endpoint)
       .then(function (res) {
-        console.log(res);
         let result = res.data;
         dispatch(initData(result));
       })

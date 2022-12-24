@@ -71,9 +71,8 @@ function EditSiswa({ dispatch, id, items }) {
       })
       .then((res) => ({ status: res.status, body: res.data }))
       .then((obj) => {
-        console.log(items);
         dispatch(updateSiswa(obj.body));
-        console.log(obj.body);
+
         setOpen({ isOpen: true, text: obj.status });
       })
       .catch((err) => {
@@ -100,7 +99,11 @@ function EditSiswa({ dispatch, id, items }) {
   return (
     <>
       <Container maxWidth="md">
-        <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
+        <Typography
+          variant="h5"
+          fontWeight={500}
+          sx={{ textAlign: "center", my: 3 }}
+        >
           Update Siswa SMA Setia
         </Typography>
         <Alert sx={{ display: open.isOpen ? "flex" : "none", mb: 3 }}>

@@ -12,8 +12,8 @@ function App() {
   return (
     <BrowserRouter>
       <NavBar />
-      <Container maxWidth="md">
-        <Breadcrumbs aria-label="breadcrumb" sx={{ my: 0.5 }}>
+      <Container maxWidth="lg">
+        <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 3 }}>
           <Link className="Link" to="/">
             Home
           </Link>
