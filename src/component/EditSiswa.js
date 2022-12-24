@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { updateSiswa } from "../actions";
@@ -28,9 +29,8 @@ const gender = ["Laki-laki", "Perempuan"];
 function EditSiswa({ dispatch, id, items }) {
   const [formValues, setFormValues] = useState(defaultValues);
   const [open, setOpen] = useState(alertStatus);
-  const [data, setData] = useState("");
+  const [errMessage, setErrMessage] = useState("");
   const handleInputChange = (e) => {
-    console.log(id);
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
@@ -39,10 +39,10 @@ function EditSiswa({ dispatch, id, items }) {
   };
 
   useEffect(() => {
-    console.log(id);
     if (id !== "") {
-      fetch(`https://dummyjson.com/users/${id}`)
-        .then((res) => res.json())
+      axios
+        .get(`https://dummyjson.com/users/${id}`)
+        .then((res) => res.data)
         .then((data) => {
           setFormValues({
             firstName: data.firstName,
@@ -50,41 +50,46 @@ function EditSiswa({ dispatch, id, items }) {
             city: data.address.city,
             gender: data.gender,
           });
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrMessage(err.message);
         });
     }
+    <div> Something's wrong...</div>; // eslint-disable-next-line
   }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    fetch(`https://dummyjson.com/users/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    axios
+      .put(`https://dummyjson.com/users/${id}`, {
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         address: { city: formValues.city },
         gender: formValues.gender,
-      }),
-    })
-      .then((res) => {
-        res
-          .json()
-          .then((data) => ({ status: res.status, body: data }))
-          .then((obj) => {
-            console.log(items);
-            dispatch(updateSiswa(obj.body));
-            console.log(obj.body);
-            setOpen({ isOpen: true, text: obj.status });
-          });
       })
-
+      .then((res) => ({ status: res.status, body: res.data }))
+      .then((obj) => {
+        console.log(items);
+        dispatch(updateSiswa(obj.body));
+        console.log(obj.body);
+        setOpen({ isOpen: true, text: obj.status });
+      })
       .catch((err) => {
         console.log(err);
+        setErrMessage(err.message);
       });
   };
 
   if (formValues.firstName === "") {
+    if (errMessage) {
+      return (
+        <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
+          {errMessage}
+        </Typography>
+      );
+    }
     return (
       <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
         Loading...
@@ -98,10 +103,7 @@ function EditSiswa({ dispatch, id, items }) {
         <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
           Update Siswa SMA Setia
         </Typography>
-        <Alert
-          sx={{ display: open.isOpen ? "flex" : "none", mb: 3 }}
-          onClose={() => {}}
-        >
+        <Alert sx={{ display: open.isOpen ? "flex" : "none", mb: 3 }}>
           {`This is a success alert - ${open.text}`}
         </Alert>
         <form onSubmit={handleSubmit}>

@@ -20,6 +20,7 @@ const defaultValues = {
 
 const alertStatus = {
   isOpen: false,
+  success: true,
   text: "",
 };
 
@@ -50,18 +51,22 @@ function AddSiswa({ dispatch }) {
       }),
     })
       .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not OK");
+        }
         res
           .json()
           .then((data) => ({ status: res.status, body: data }))
           .then((obj) => {
             dispatch(addSiswa(obj.body));
             console.log(obj.body);
-            setOpen({ isOpen: true, text: obj.status });
+            setOpen({ isOpen: true, text: obj.status, success: true });
           });
       })
 
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        setOpen({ isOpen: true, text: error, success: false });
+        console.error("Error:", error);
       });
   };
 
@@ -72,10 +77,12 @@ function AddSiswa({ dispatch }) {
           Tambah Siswa SMA Setia
         </Typography>
         <Alert
+          severity={!open.success ? "error" : "success"}
           sx={{ display: open.isOpen ? "flex" : "none", mb: 3 }}
-          onClose={() => {}}
         >
-          {`This is a success alert - ${open.text}`}
+          {`This is a ${!open.success ? "error" : "success"} alert - ${
+            open.text
+          }`}
         </Alert>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -107,6 +114,7 @@ function AddSiswa({ dispatch }) {
                 id="gender-input"
                 required
                 select
+                sx={{ width: 182 }}
                 label="Gender"
                 name="gender"
                 variant="standard"

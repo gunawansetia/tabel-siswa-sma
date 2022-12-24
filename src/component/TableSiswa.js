@@ -10,37 +10,25 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { connect } from "react-redux";
 import { fetchTable, getId } from "../actions";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  TablePagination,
-} from "@mui/material";
+import { Button, TablePagination } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Delete, DeleteOutlined, EditOutlined } from "@mui/icons-material";
+import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import { pink } from "@mui/material/colors";
 import DeleteSiswa from "./DeleteSiswa";
-
-const alertStatus = {
-  isOpen: false,
-  text: false,
-};
 
 function TableSiswa(props) {
   useEffect(() => {
     if (props.items ? props.items.length === 0 : true) {
       props.dispatch(fetchTable());
     }
-    console.log(props);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [id, setId] = useState("");
   const [open, setOpen] = useState(false);
-  const [openStatusDelete, setOpenStatusDelete] = useState(alertStatus);
-  const [id, setId] = useState(0);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -53,32 +41,6 @@ function TableSiswa(props) {
 
   const getIdUser = (id) => {
     props.dispatch(getId(id));
-    setId(id);
-  };
-
-  const handleDelete = (event) => {
-    setOpen(true);
-    console.log(id);
-    if (event.target) {
-      if (event.target.textContent === "Yes") {
-        fetch(`https://dummyjson.com/users/${id}`, {
-          method: "DELETE",
-        }).then((res) => {
-          res
-            .json()
-            .then((data) => ({ status: data.isDeleted, body: data }))
-            .then((obj) => {
-              console.log(obj.body);
-              setOpen(false);
-              setOpenStatusDelete({ isOpen: true, text: obj.status });
-            });
-        });
-      }
-    }
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   if (props.isLoading || props.items.length === 0 || !props.items) {
@@ -91,54 +53,13 @@ function TableSiswa(props) {
 
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Are you sure delete this data?"}
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={openStatusDelete.isOpen}
-        onClose={() => {
-          setOpenStatusDelete({ isOpen: false, text: openStatusDelete.text });
-        }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {openStatusDelete.text
-            ? "Berhasil menghapus Data"
-            : "Gagal Menghapus"}
-        </DialogTitle>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setOpenStatusDelete({
-                isOpen: false,
-                text: openStatusDelete.text,
-              });
-            }}
-          >
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteSiswa anId={id} open={open} setOpen={setOpen} />
 
       <Container maxWidth="xl">
         <Typography variant="h5" sx={{ textAlign: "center", my: 3 }}>
           Daftar Siswa SMA Setia
         </Typography>
-        <Link to="/add">
+        <Link style={{ textDecoration: "none" }} to="/add">
           <Button variant="outlined">Tambah Siswa</Button>
         </Link>
         <TableContainer sx={{ my: 2 }} component={Paper}>
@@ -155,9 +76,9 @@ function TableSiswa(props) {
             <TableBody>
               {props.items
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
+                .map((row, index) => (
                   <TableRow
-                    key={row.id}
+                    key={index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
@@ -186,7 +107,7 @@ function TableSiswa(props) {
                       <Button
                         sx={{ color: pink[500] }}
                         onClick={() => {
-                          getIdUser(row.id);
+                          setId(row.id);
                           setOpen(true);
                         }}
                       >
